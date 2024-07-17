@@ -20,8 +20,6 @@ git clone <your-repository-url>
 cd library-full-stack
 ```
 
-````
-
 2. Install dependencies for both frontend and backend.
 
 ```bash
