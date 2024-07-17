@@ -9,7 +9,7 @@ const booksRouter = require("./books/books-router");
 
 server.use(helmet());
 server.use(express.json());
-server.use(cors({ origin: "http://localhost:3000" }));
+server.use(cors());
 server.use(morgan("dev"));
 
 server.use("/users", usersRouter);

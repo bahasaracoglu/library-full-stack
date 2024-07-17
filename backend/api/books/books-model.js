@@ -1,7 +1,11 @@
 const db = require("../../data/db-config");
 
 async function getAll() {
-  const books = await db("books as b").select("b.book_id", "b.name");
+  const books = await db("books as b").select(
+    "b.book_id",
+    "b.name",
+    "b.is_loaned"
+  );
   return books;
 }
 async function getBookWithId(id) {

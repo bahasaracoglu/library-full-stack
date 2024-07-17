@@ -1,23 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+import { useState } from "react";
+
+import BookList from "./pages/BookList";
 
 function App() {
+  //const { currentUser } = useContext(AuthContext);
+  const [applicationInfo, setApplicationInfo] = useState(null);
+
+  //const currentUser = false;
+  // console.log(currentUser);
+  // const RequireAuth = ({ children }) => {
+  //   return currentUser ? children : <Navigate to="/admin" />;
+  // };
+  const router = createBrowserRouter([
+    //{ path: "*", element: <Navigate to="/basvuru-olustur" /> },
+
+    {
+      path: "/book-list",
+      element: <BookList />,
+    },
+  ]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <RouterProvider router={router} />
     </div>
   );
 }
