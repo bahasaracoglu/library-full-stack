@@ -6,9 +6,6 @@ const API_URLS = {
   },
   BOOKS: {
     LIST: `${BASE_URL}/books`,
-    DETAIL: (bookId) => `${BASE_URL}/books/${bookId}`,
-    RENT: `${BASE_URL}/books/rent`,
-    RETURN: `${BASE_URL}/books/return`,
   },
   LOANS: {
     LIST: `${BASE_URL}/loans`,

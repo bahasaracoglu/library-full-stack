@@ -6,7 +6,8 @@ async function getAll() {
     "l.user_id",
     "l.book_id",
     "l.loan_date",
-    "l.return_date"
+    "l.return_date",
+    "l.user_score"
   );
   return loans;
 }

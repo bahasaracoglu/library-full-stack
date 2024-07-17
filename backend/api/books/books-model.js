@@ -4,7 +4,8 @@ async function getAll() {
   const books = await db("books as b").select(
     "b.book_id",
     "b.name",
-    "b.is_loaned"
+    "b.is_loaned",
+    "b.score"
   );
   return books;
 }

@@ -4,3 +4,25 @@
 .app {
   background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
 }
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  marginright: -50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  borderradius: 10px;
+  boxshadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  backgroundcolor: rgba(0, 0, 0, 0.75);
+}

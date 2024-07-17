@@ -21,33 +21,25 @@ async function getUserWithLoans(userId) {
   const loans = await db("loans as l")
     .join("books as b", "l.book_id", "b.book_id")
     .where({ "l.user_id": userId })
-    .select(
-      "b.name",
-      "b.book_id",
-      "l.loan_date",
-      "l.return_date",
-      "l.user_score as userScore"
-    );
+    .select("b.name", "b.book_id", "l.loan_date", "l.return_date");
 
   const past = loans
     .filter((loan) => loan.return_date)
     .map((loan) => {
-      const { book_id, name, userScore } = loan;
+      const { book_id, name } = loan;
       return {
         book_id: book_id,
         name,
-        ...(userScore !== null && { userScore }),
       };
     });
 
   const present = loans
     .filter((loan) => !loan.return_date)
     .map((loan) => {
-      const { book_id, name, userScore } = loan;
+      const { book_id, name } = loan;
       return {
         book_id: book_id,
         name,
-        ...(userScore !== null && { userScore }),
       };
     });
 
@@ -64,7 +56,7 @@ async function create(user) {
 }
 async function borrowBook(user_id, book_id) {
   const loanDate = formatDate(Date.now());
-  await db("loans as l").insert({
+  await db("loans").insert({
     user_id: user_id,
     book_id: book_id,
     loan_date: loanDate,

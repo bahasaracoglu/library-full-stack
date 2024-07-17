@@ -10,16 +10,16 @@ exports.seed = async function (knex) {
 
   await knex("users").insert([
     {
-      name: "Eray Aslan",
+      name: "John Doe",
     },
     {
-      name: "Enes Faruk Meniz",
+      name: "Baha Saraçoğlu",
     },
     {
-      name: "Sefa Eren Şahin",
+      name: "Jane Doe",
     },
     {
-      name: "Kadir Mutlu",
+      name: "Elon Musk",
     },
   ]);
 
@@ -49,6 +49,11 @@ exports.seed = async function (knex) {
       score: -1,
       is_loaned: true,
     },
+    {
+      name: "Dracula",
+      score: 5,
+      is_loaned: true,
+    },
   ]);
 
   await knex("loans").insert([
@@ -69,6 +74,11 @@ exports.seed = async function (knex) {
     {
       user_id: 2,
       book_id: 5,
+      loan_date: knex.fn.now(),
+    },
+    {
+      user_id: 2,
+      book_id: 6,
       loan_date: knex.fn.now(),
     },
   ]);
