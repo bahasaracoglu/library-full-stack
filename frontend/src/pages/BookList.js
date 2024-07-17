@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import UserMenu from "./UserMenu";
 import Loader from "../components/Loader";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import API_URLS from "../config/api";
+import AuthContext from "../context/AuthContext";
 
 function BookList() {
   const [bookList, setBookList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isUserHaveThisBook, setisUserHaveThisBook] = useState(false);
+  const { currentUser } = useContext(AuthContext);
+  console.log("crrtnuser", currentUser);
   const fetchData = async () => {
     try {
       const response = await axios.get(API_URLS.BOOKS.LIST);
@@ -20,7 +24,37 @@ function BookList() {
       setLoading(false);
     }
   };
-  const filterData = async () => {};
+
+  const filterData = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `${API_URLS.USERS.LIST}/${currentUser.user_id}`
+      );
+      const rentedBooks = response.data.present;
+      setBookList(rentedBooks);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  const checkIfUserHasBook = async (bookId) => {
+    try {
+      const response = await axios.get(
+        `${API_URLS.LOANS.LIST}?bookId=${bookId}&userId=${currentUser.user_id}`
+      );
+      const loanedBook = response.data.find(
+        (loan) => loan.loan_date && !loan.return_date
+      );
+      return !!loanedBook; // True if user has the book, false otherwise
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -30,6 +64,9 @@ function BookList() {
     <section className="min-h-screen flex flex-col justify-center items-center">
       <UserMenu className="flex self-start  w-[93%] bg-indigo-400 text-white font-medium p-4  rounded-xl max-w-screen-md mt-4" />
       <div className="flex flex-col  my-6 w-[93%] p-4 gap-4 rounded-xl max-w-screen-md bg-white shadow-xl md:p-8 min-h-[670px] ">
+        <h1 className="text-sky-800 font-bold text-xl">
+          Hoşgeldiniz, {currentUser.name}
+        </h1>
         <h1 className="pt-8 pb-8 font-bold text-xl">Kitap Listesi</h1>
         <div className="flex flex-col justify-between gap-2 md:flex-row">
           <button
@@ -52,56 +89,55 @@ function BookList() {
           </div>
         ) : (
           <ul className=" flex flex-col gap-4">
-            {bookList.map((book) => (
-              <li key={book.id} className="bg-slate-200 p-4 rounded-xl">
-                <div className="flex justify-between items-center border-b border-indigo-200 pb-2">
-                  <span className="font-medium w-1/2">Kitap Adı</span>
-                  <span className="ml-auto text-left w-1/2 overflow-hidden overflow-ellipsis">
-                    {book.name}
-                  </span>
-                </div>
-                {/* <div className="flex justify-between items-center border-b border-indigo-200 py-2">
-                  <span className="font-medium w-1/2">Oluşturulma Tarihi</span>
-                  <span className="ml-auto text-left w-1/2 overflow-hidden overflow-ellipsis">
-                    {book.createdAt.toDate().toLocaleString()}
-                  </span>
-                </div>{" "} */}
-                <div className="flex justify-between items-center border-b border-indigo-200 py-2">
-                  <span className="font-medium w-1/2">Müsaitlik Durumu</span>
-                  <span className="ml-auto text-left w-1/2 overflow-hidden overflow-ellipsis">
-                    {book.is_loaned ? (
-                      <span className=" text-emerald-700 font-medium">
-                        Müsait
+            {!bookList
+              ? "Herhangi bir kitap ödünç alınmadı."
+              : bookList.map((book) => (
+                  <li key={book.id} className="bg-slate-200 p-4 rounded-xl">
+                    <div className="flex justify-between items-center border-b border-indigo-200 pb-2">
+                      <span className="font-medium w-1/2">Kitap Adı</span>
+                      <span className="ml-auto text-left w-1/2 overflow-hidden overflow-ellipsis">
+                        {book.name}
                       </span>
-                    ) : (
-                      <span className=" text-yellow-600 font-medium">
-                        Müsait Değil
-                      </span>
-                    )}
-                  </span>
-                </div>
-                <div className="flex flex-row justify-between">
-                  {book.is_loaned ? (
-                    ""
-                  ) : (
-                    <div className="flex flex-col justify-center items-center rounded-xl mt-3 p-1 bg-emerald-700 text-white font-medium w-[170px] hover:scale-105">
-                      <Link
-                        to={`/admin/basvuru/${book.id}`}
-                        className="hover:text-blue-700"
-                      >
-                        Ödünç Al
-                      </Link>
                     </div>
-                  )}
-                  <div
-                    onClick={() => deleteData(book.id)}
-                    className="flex flex-col justify-center items-center rounded-xl mt-3 p-1 bg-red-700 text-white font-medium w-[170px] hover:scale-105 hover:cursor-pointer"
-                  >
-                    İade Et
-                  </div>
-                </div>
-              </li>
-            ))}
+
+                    <div className="flex justify-between items-center border-b border-indigo-200 py-2">
+                      <span className="font-medium w-1/2">
+                        Müsaitlik Durumu
+                      </span>
+                      <span className="ml-auto text-left w-1/2 overflow-hidden overflow-ellipsis">
+                        {book.is_loaned ? (
+                          <span className=" text-emerald-700 font-medium">
+                            Müsait
+                          </span>
+                        ) : (
+                          <span className=" text-yellow-600 font-medium">
+                            Müsait Değil
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex flex-row justify-between">
+                      {book.is_loaned ? (
+                        <div className="flex flex-col justify-center items-center rounded-xl mt-3 p-1 bg-emerald-700 text-white font-medium w-[170px] hover:scale-105">
+                          <Link
+                            to={`/admin/basvuru/${book.id}`}
+                            className="hover:text-blue-700"
+                          >
+                            Ödünç Al
+                          </Link>
+                        </div>
+                      ) : (
+                        ""
+                      )}
+                      <div
+                        onClick={() => deleteData(book.id)}
+                        className="flex flex-col justify-center items-center rounded-xl mt-3 p-1 bg-red-700 text-white font-medium w-[170px] hover:scale-105 hover:cursor-pointer"
+                      >
+                        İade Et
+                      </div>
+                    </div>
+                  </li>
+                ))}
           </ul>
         )}
       </div>

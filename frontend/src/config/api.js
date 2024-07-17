@@ -1,9 +1,8 @@
 const BASE_URL = "http://localhost:3000";
 
 const API_URLS = {
-  AUTH: {
-    LOGIN: `${BASE_URL}/auth/login`,
-    REGISTER: `${BASE_URL}/auth/register`,
+  USERS: {
+    LIST: `${BASE_URL}/users`,
   },
   BOOKS: {
     LIST: `${BASE_URL}/books`,
