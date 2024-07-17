@@ -10,6 +10,9 @@ const API_URLS = {
     RENT: `${BASE_URL}/books/rent`,
     RETURN: `${BASE_URL}/books/return`,
   },
+  LOANS: {
+    LIST: `${BASE_URL}/loans`,
+  },
 };
 
 export default API_URLS;

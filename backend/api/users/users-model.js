@@ -23,6 +23,7 @@ async function getUserWithLoans(userId) {
     .where({ "l.user_id": userId })
     .select(
       "b.name",
+      "b.book_id",
       "l.loan_date",
       "l.return_date",
       "l.user_score as userScore"
@@ -31,8 +32,9 @@ async function getUserWithLoans(userId) {
   const past = loans
     .filter((loan) => loan.return_date)
     .map((loan) => {
-      const { name, userScore } = loan;
+      const { book_id, name, userScore } = loan;
       return {
+        book_id: book_id,
         name,
         ...(userScore !== null && { userScore }),
       };
@@ -41,8 +43,9 @@ async function getUserWithLoans(userId) {
   const present = loans
     .filter((loan) => !loan.return_date)
     .map((loan) => {
-      const { name, userScore } = loan;
+      const { book_id, name, userScore } = loan;
       return {
+        book_id: book_id,
         name,
         ...(userScore !== null && { userScore }),
       };
